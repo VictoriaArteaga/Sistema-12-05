@@ -3,11 +3,12 @@ from uuid import UUID, uuid4
 from typing import List, Optional
 from datetime import datetime
 
+
 @dataclass
 class User:
     """
     Representa a un Candidato dentro de la plataforma JobConnect.
-    Incluye perfil profesional, competencias y trazabilidad de aplicaciones.
+    Incluye perfil profesional, competencias y trazabilidad de aplicaciones...
     """
     first_name: str
     last_name: str
@@ -38,7 +39,7 @@ class User:
             self.applied_jobs_ids.append(job_id)
 
     def to_dict(self) -> dict:
-        """Serializa el objeto para persistencia en JSON/CSV."""
+
         return {
             "id": str(self.id),
             "full_name": self.full_name,

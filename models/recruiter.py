@@ -31,7 +31,7 @@ class Recruiter:
         return False
 
     def to_dict(self) -> dict:
-        """Serializa el objeto para persistencia."""
+
         return {
             "id": str(self.id),
             "company_name": self.company_name,
