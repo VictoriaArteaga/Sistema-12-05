@@ -2,10 +2,12 @@
 import customtkinter as ctk
 from ui.components.forms import FormInput, PrimaryButton
 from ui.styles.theme import Theme
+from services.user_service import UserService
 
 class CandidateScreen(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, fg_color="transparent", **kwargs)
+        self.user_service = UserService()
         
         # Título
         self.label = ctk.CTkLabel(
@@ -31,8 +33,21 @@ class CandidateScreen(ctk.CTkFrame):
         self.save_btn.pack(pady=(20, 0))
 
     def save_profile(self):
-        # Aquí se llamaría al servicio (Persona 2) en el futuro
-        print(f"Guardando perfil: {self.name_input.get_value()}")
-        # Por ahora solo feedback visual
-        self.save_btn.configure(text="¡Guardado!", fg_color=Theme.SUCCESS)
+        name = self.name_input.get_value()
+        email = self.email_input.get_value()
+        skills = [s.strip() for s in self.skills_input.get_value().split(",")]
+
+        if not name or not email:
+            self.save_btn.configure(text="Faltan datos", fg_color=Theme.DANGER)
+            self.after(2000, lambda: self.save_btn.configure(text="Guardar Perfil", fg_color=Theme.PRIMARY))
+            return
+
+        try:
+            self.user_service.register_user(name, email, skills)
+            print(f"Perfil guardado en JSON: {name}")
+            self.save_btn.configure(text="¡Perfil Guardado!", fg_color=Theme.SUCCESS)
+        except Exception as e:
+            self.save_btn.configure(text="Error al guardar", fg_color=Theme.DANGER)
+            print(f"Error: {e}")
+
         self.after(2000, lambda: self.save_btn.configure(text="Guardar Perfil", fg_color=Theme.PRIMARY))

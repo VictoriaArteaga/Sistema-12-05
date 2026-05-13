@@ -50,3 +50,15 @@ class JSONManager:
                 self.save_data(filename, data)
                 return True
         return False
+
+# Funciones de compatibilidad para código antiguo
+_manager = JSONManager()
+
+def load_data(file_path: str) -> list:
+    # Si pasan una ruta completa, extraemos el nombre del archivo
+    filename = os.path.basename(file_path)
+    return _manager.load_data(filename)
+
+def save_data(file_path: str, data: list) -> None:
+    filename = os.path.basename(file_path)
+    _manager.save_data(filename, data)
