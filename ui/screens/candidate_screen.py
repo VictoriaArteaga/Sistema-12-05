@@ -6,33 +6,27 @@ from ui.styles.theme import Theme
 class CandidateScreen(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, fg_color="transparent", **kwargs)
-        
-        # Título
-        self.label = ctk.CTkLabel(
-            self, text="Perfil del Candidato", 
-            font=ctk.CTkFont(size=28, weight="bold")
-        )
-        self.label.pack(pady=(0, 20), anchor="w")
-
-        # Formulario de Registro/Edición
-        self.form_container = ctk.CTkFrame(self, fg_color=Theme.BG_CARD, corner_radius=12, padx=30, pady=30)
-        self.form_container.pack(fill="x", pady=10)
-
-        self.name_input = FormInput(self.form_container, "Nombre Completo", "Ej. Juan Pérez")
-        self.name_input.pack(fill="x", pady=10)
-
-        self.email_input = FormInput(self.form_container, "Correo Electrónico", "juan@ejemplo.com")
-        self.email_input.pack(fill="x", pady=10)
-
-        self.skills_input = FormInput(self.form_container, "Habilidades (separadas por coma)", "Python, SQL, AWS")
-        self.skills_input.pack(fill="x", pady=10)
-
-        self.save_btn = PrimaryButton(self.form_container, "Guardar Perfil", self.save_profile)
-        self.save_btn.pack(pady=(20, 0))
+        self.header = ctk.CTkFrame(self, fg_color="transparent")
+        self.header.pack(fill="x", pady=(0, 30))
+        self.label = ctk.CTkLabel(self.header, text="Mi Perfil Profesional 🚀", font=ctk.CTkFont(size=32, weight="bold"))
+        self.label.pack(side="left")
+        self.form_card = ctk.CTkFrame(self, fg_color=Theme.BG_CARD, corner_radius=20)
+        self.form_card.pack(fill="x", pady=10, padx=2)
+        self.inner_form = ctk.CTkFrame(self.form_card, fg_color="transparent", padx=40, pady=40)
+        self.inner_form.pack(fill="x")
+        self.name_input = FormInput(self.inner_form, "Nombre Completo", "Tu nombre...")
+        self.name_input.pack(fill="x", pady=15)
+        self.email_input = FormInput(self.inner_form, "Correo Personal", "usuario@correo.com")
+        self.email_input.pack(fill="x", pady=15)
+        self.skills_input = FormInput(self.inner_form, "Habilidades Clave", "Ej. Python, Design, Management")
+        self.skills_input.pack(fill="x", pady=15)
+        self.save_btn = PrimaryButton(self.inner_form, "Actualizar Mi Perfil ✨", self.save_profile)
+        self.save_btn.pack(pady=(30, 0), fill="x")
 
     def save_profile(self):
-        # Aquí se llamaría al servicio (Persona 2) en el futuro
-        print(f"Guardando perfil: {self.name_input.get_value()}")
-        # Por ahora solo feedback visual
-        self.save_btn.configure(text="¡Guardado!", fg_color=Theme.SUCCESS)
-        self.after(2000, lambda: self.save_btn.configure(text="Guardar Perfil", fg_color=Theme.PRIMARY))
+        self.save_btn.configure(text="Procesando...", state="disabled")
+        self.after(1000, self._show_success)
+
+    def _show_success(self):
+        self.save_btn.configure(text="¡Perfil Optimizado! ✅", fg_color=Theme.SUCCESS, state="normal")
+        self.after(2000, lambda: self.save_btn.configure(text="Actualizar Mi Perfil ✨", fg_color=Theme.PRIMARY))

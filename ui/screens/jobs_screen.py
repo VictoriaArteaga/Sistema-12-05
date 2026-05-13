@@ -6,45 +6,18 @@ from ui.styles.theme import Theme
 class JobsScreen(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, fg_color="transparent", **kwargs)
-        
-        # Título y Buscador
-        self.header_container = ctk.CTkFrame(self, fg_color="transparent")
-        self.header_container.pack(fill="x", pady=(0, 20))
+        self.header = ctk.CTkFrame(self, fg_color="transparent")
+        self.header.pack(fill="x", pady=(0, 30))
+        self.title = ctk.CTkLabel(self.header, text="Explorador de Talento 🔍", font=ctk.CTkFont(size=32, weight="bold"))
+        self.title.pack(side="left")
+        self.search = ctk.CTkEntry(self.header, placeholder_text="Filtrar por tecnología...", width=350, height=50, corner_radius=15, border_width=2, border_color=Theme.BG_CARD)
+        self.search.pack(side="right")
+        self.scroll = ctk.CTkScrollableFrame(self, fg_color="transparent", label_text="OPORTUNIDADES DESTACADAS", label_font=ctk.CTkFont(size=14, weight="bold"), label_text_color=Theme.ACCENT)
+        self.scroll.pack(fill="both", expand=True)
+        self._add_mock_jobs()
 
-        self.title_label = ctk.CTkLabel(
-            self.header_container, text="Explorar Vacantes", 
-            font=ctk.CTkFont(size=28, weight="bold")
-        )
-        self.title_label.pack(side="left")
-
-        self.search_entry = ctk.CTkEntry(
-            self.header_container, placeholder_text="Buscar por cargo o empresa...",
-            width=300, height=35
-        )
-        self.search_entry.pack(side="right", padx=10)
-
-        # Scrollable Frame para las vacantes
-        self.scroll_container = ctk.CTkScrollableFrame(
-            self, fg_color="transparent", 
-            label_text="Vacantes Disponibles",
-            label_font=ctk.CTkFont(size=14, weight="bold")
-        )
-        self.scroll_container.pack(fill="both", expand=True)
-
-        # Ejemplo de vacantes (Mock data)
-        self.mock_jobs = [
-            {"title": "Senior Python Developer", "company": "TechNova Solutions", "salary": "$4,500", "status": "Abierta"},
-            {"title": "Data Analyst", "company": "Global Insight", "salary": "$3,200", "status": "Abierta"},
-            {"title": "UI/UX Designer", "company": "Creative Studio", "salary": "$3,800", "status": "Urgente"},
-            {"title": "DevOps Engineer", "company": "Cloud Systems", "salary": "$5,000", "status": "Abierta"},
-        ]
-
-        for job in self.mock_jobs:
-            card = JobCard(
-                self.scroll_container, 
-                title=job["title"], 
-                company=job["company"], 
-                salary=job["salary"], 
-                status=job["status"]
-            )
-            card.pack(fill="x", pady=10, padx=5)
+    def _add_mock_jobs(self):
+        jobs = [("Creative Director", "Design Hub", "120k", "URGENTE"), ("Senior Fullstack", "TechFlow", "95k", "DESTACADO"), ("AI Engineer", "NeuralLab", "150k", "NUEVO")]
+        for t, c, s, st in jobs:
+            card = JobCard(self.scroll, title=t, company=c, salary=s, status=st)
+            card.pack(fill="x", pady=10, padx=10)
