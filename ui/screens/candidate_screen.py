@@ -17,8 +17,8 @@ class CandidateScreen(ctk.CTkFrame):
         self.label.pack(pady=(0, 20), anchor="w")
 
         # Formulario de Registro/Edición
-        self.form_container = ctk.CTkFrame(self, fg_color=Theme.BG_CARD, corner_radius=12, padx=30, pady=30)
-        self.form_container.pack(fill="x", pady=10)
+        self.form_container = ctk.CTkFrame(self, fg_color=Theme.BG_CARD, corner_radius=12)
+        self.form_container.pack(fill="x", pady=10, padx=30)
 
         self.name_input = FormInput(self.form_container, "Nombre Completo", "Ej. Juan Pérez")
         self.name_input.pack(fill="x", pady=10)

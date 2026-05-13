@@ -24,8 +24,8 @@ class RecruiterScreen(ctk.CTkFrame):
         )
         self.company_label.pack(pady=(10, 5), anchor="w")
 
-        self.company_card = ctk.CTkFrame(self, fg_color=Theme.BG_CARD, corner_radius=12, padx=30, pady=20)
-        self.company_card.pack(fill="x", pady=(0, 20))
+        self.company_card = ctk.CTkFrame(self, fg_color=Theme.BG_CARD, corner_radius=12)
+        self.company_card.pack(fill="x", pady=(0, 20), padx=30)
 
         self.comp_name = FormInput(self.company_card, "Nombre de la Empresa", "Ej. Tech Corp")
         self.comp_name.pack(fill="x", pady=5)
