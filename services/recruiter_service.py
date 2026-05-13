@@ -54,17 +54,6 @@ class RecruiterService:
         - Email must have a valid format.
         - Two recruiters cannot register with the same email.
         - Industry/sector cannot be empty.
-
-        Args:
-            company_name: Name of the company.
-            email: Contact email address.
-            industry: Company sector or industry.
-
-        Returns:
-            The created Recruiter object.
-
-        Raises:
-            ValueError: If any data is invalid or the email already exists.
         """
         # Validations
         company_name = validate_not_empty(company_name, "company name")
@@ -103,15 +92,7 @@ class RecruiterService:
 
     @classmethod
     def get_recruiter_by_id(cls, recruiter_id: str) -> Optional[Recruiter]:
-        """
-        Finds a recruiter by their ID.
-
-        Args:
-            recruiter_id: Unique ID of the recruiter.
-
-        Returns:
-            The Recruiter object if found, None otherwise.
-        """
+        """Finds a recruiter by their ID."""
         recruiters = cls.get_all_recruiters()
         for recruiter in recruiters:
             if recruiter.id == recruiter_id:
@@ -120,15 +101,7 @@ class RecruiterService:
 
     @classmethod
     def get_recruiter_by_email(cls, email: str) -> Optional[Recruiter]:
-        """
-        Finds a recruiter by their email address.
-
-        Args:
-            email: Recruiter's email.
-
-        Returns:
-            The Recruiter object if found, None otherwise.
-        """
+        """Finds a recruiter by their email address."""
         if not email:
             return None
 
@@ -144,59 +117,26 @@ class RecruiterService:
     # ────────────────────────────────────────────
 
     @classmethod
-    def update_recruiter(
-        cls,
-        recruiter_id: str,
-        company_name: Optional[str] = None,
-        email: Optional[str] = None,
-        industry: Optional[str] = None
-    ) -> Optional[Recruiter]:
-        """
-        Updates the data of an existing recruiter.
-
-        Only provided (non-None) fields are updated.
-
-        Business rules:
-        - If the email is changed, the new email must not exist for another recruiter.
-
-        Args:
-            recruiter_id: ID of the recruiter to update.
-            company_name: New company name (optional).
-            email: New email (optional).
-            industry: New industry/sector (optional).
-
-        Returns:
-            The updated Recruiter object, or None if not found.
-
-        Raises:
-            ValueError: If any provided data is invalid.
-        """
+    def update_recruiter(cls, recruiter_id: str, company_name: Optional[str] = None,
+                         email: Optional[str] = None, industry: Optional[str] = None) -> Optional[Recruiter]:
+        """Updates the data of an existing recruiter. Only provided (non-None) fields are updated."""
         recruiters = cls.get_all_recruiters()
         recruiter_updated = False
 
         for recruiter in recruiters:
             if recruiter.id == recruiter_id:
-                # Validate and update company name
                 if company_name is not None:
                     recruiter.company_name = validate_not_empty(company_name, "company name")
-
-                # Validate and update email
                 if email is not None:
                     email_clean = email.strip().lower()
                     if not validate_email(email_clean):
                         raise ValueError("The email address does not have a valid format.")
-
-                    # Check that the new email is not in use by another recruiter
                     existing = cls.get_recruiter_by_email(email_clean)
                     if existing and existing.id != recruiter_id:
                         raise ValueError(f"The email '{email_clean}' is already in use by another recruiter.")
-
                     recruiter.email = email_clean
-
-                # Validate and update industry
                 if industry is not None:
                     recruiter.industry = validate_not_empty(industry, "industry/sector")
-
                 recruiter_updated = True
                 break
 
@@ -204,7 +144,6 @@ class RecruiterService:
             recruiters_data = [r.to_dict() for r in recruiters]
             cls._save_all_recruiters_data(recruiters_data)
             return cls.get_recruiter_by_id(recruiter_id)
-
         return None
 
     # ────────────────────────────────────────────
@@ -213,51 +152,21 @@ class RecruiterService:
 
     @classmethod
     def search_by_company(cls, company_name: str) -> List[Recruiter]:
-        """
-        Searches for recruiters whose company name contains the given text.
-
-        The search is case-insensitive and partial.
-
-        Args:
-            company_name: Text to search for in the company name.
-
-        Returns:
-            List of matching recruiters.
-        """
+        """Searches for recruiters whose company name contains the given text."""
         if not company_name or not company_name.strip():
             return []
-
         name_lower = company_name.strip().lower()
         recruiters = cls.get_all_recruiters()
-
-        return [
-            r for r in recruiters
-            if name_lower in r.company_name.lower()
-        ]
+        return [r for r in recruiters if name_lower in r.company_name.lower()]
 
     @classmethod
     def search_by_industry(cls, industry: str) -> List[Recruiter]:
-        """
-        Searches for recruiters by sector/industry.
-
-        The search is case-insensitive and partial.
-
-        Args:
-            industry: Industry or sector to search for.
-
-        Returns:
-            List of recruiters in the specified sector.
-        """
+        """Searches for recruiters by sector/industry."""
         if not industry or not industry.strip():
             return []
-
         industry_lower = industry.strip().lower()
         recruiters = cls.get_all_recruiters()
-
-        return [
-            r for r in recruiters
-            if industry_lower in r.industry.lower()
-        ]
+        return [r for r in recruiters if industry_lower in r.industry.lower()]
 
     # ────────────────────────────────────────────
     #  Deletion
@@ -265,22 +174,11 @@ class RecruiterService:
 
     @classmethod
     def delete_recruiter(cls, recruiter_id: str) -> bool:
-        """
-        Deletes a recruiter from the system by their ID.
-
-        Args:
-            recruiter_id: ID of the recruiter to delete.
-
-        Returns:
-            True if successfully deleted, False if not found.
-        """
+        """Deletes a recruiter from the system by their ID."""
         recruiters_data = cls._get_all_recruiters_data()
         original_count = len(recruiters_data)
-
         recruiters_data = [r for r in recruiters_data if r.get("id") != recruiter_id]
-
         if len(recruiters_data) < original_count:
             cls._save_all_recruiters_data(recruiters_data)
             return True
-
         return False

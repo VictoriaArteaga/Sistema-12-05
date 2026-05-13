@@ -1,38 +1,20 @@
-# Modelo que representa un empleador o empresa dentro del sistema JobConnect.
+# Modelo de reclutador
+
 import uuid
 from datetime import datetime
-
+from typing import Optional
 
 class Recruiter:
+    """Modelo que representa un reclutador/empresa en el sistema."""
 
-    def __init__(
-        self,
-        company_name: str,
-        email: str,
-        industry: str
-    ):
-        # ID único del reclutador
+    def __init__(self, company_name: str, email: str, industry: str = ""):
         self.id = str(uuid.uuid4())
-
-        # Nombre de la empresa
         self.company_name = company_name
-
-        # Correo de contacto
         self.email = email
-
-        # Sector o industria
         self.industry = industry
-
-        # Fecha de creación
         self.created_at = datetime.now().isoformat()
 
     def to_dict(self) -> dict:
-        
-        """
-        Convierte el objeto Recruiter en un diccionario
-        para poder guardarlo en JSON.
-        """
-
         return {
             "id": self.id,
             "company_name": self.company_name,
@@ -43,21 +25,14 @@ class Recruiter:
 
     @classmethod
     def from_dict(cls, data: dict) -> 'Recruiter':
-        """
-        Reconstruye un objeto Recruiter desde un diccionario.
-        """
-
         recruiter = cls(
             company_name=data["company_name"],
             email=data["email"],
-            industry=data["industry"]
+            industry=data.get("industry", "")
         )
-
-        # Restaurar datos originales
+        # Restaurar ID y fecha originales si vienen en el diccionario
         if "id" in data:
             recruiter.id = data["id"]
-
         if "created_at" in data:
             recruiter.created_at = data["created_at"]
-
         return recruiter
