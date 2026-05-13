@@ -38,19 +38,26 @@ class MainWindow(ctk.CTk):
         self.main_container = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.main_container.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
         
+        # Asegurar que el contenido del contenedor principal se expanda
+        self.main_container.grid_columnconfigure(0, weight=1)
+        self.main_container.grid_rowconfigure(0, weight=1)
+        
         self.show_home()
 
     def show_home(self):
         self.clear_main_container()
+        home_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
+        home_frame.pack(fill="both", expand=True)
+
         label = ctk.CTkLabel(
-            self.main_container, 
+            home_frame, 
             text="Bienvenido a JobConnect", 
             font=ctk.CTkFont(size=32, weight="bold")
         )
         label.pack(pady=40)
         
         info = ctk.CTkLabel(
-            self.main_container, 
+            home_frame, 
             text="Selecciona una opción en el menú lateral para comenzar.",
             font=ctk.CTkFont(size=16)
         )
@@ -77,5 +84,7 @@ class MainWindow(ctk.CTk):
         screen.pack(fill="both", expand=True)
 
     def clear_main_container(self):
+        # Limpiar de forma segura
         for widget in self.main_container.winfo_children():
             widget.destroy()
+        self.update_idletasks()

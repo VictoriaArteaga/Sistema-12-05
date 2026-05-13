@@ -187,3 +187,33 @@ class RecruiterService:
         app_data["status"] = new_status
         return self.json_manager.update_data("applications.json", application_id, app_data)
 
+
+class UserService:
+    """Servicio de lógica de negocio para candidatos (usuarios)."""
+    
+    def __init__(self):
+        self.json_manager = JSONManager()
+        self.users_file = "users.json"
+    
+    def register_user(self, name: str, email: str, skills: list = None) -> 'User':
+        from models.user import User
+        # Verificar si ya existe
+        existing = self.json_manager.find_by_field(self.users_file, "email", email)
+        if existing:
+            user = User.from_dict(existing[0])
+            user.name = name
+            user.skills = skills or []
+            self.json_manager.update_data(self.users_file, user.id, user.to_dict())
+            return user
+        
+        user = User(name, email, skills)
+        self.json_manager.append_data(self.users_file, user.to_dict())
+        return user
+
+    def get_user_by_email(self, email: str) -> Optional['User']:
+        from models.user import User
+        data = self.json_manager.find_by_field(self.users_file, "email", email)
+        if data:
+            return User.from_dict(data[0])
+        return None
+
